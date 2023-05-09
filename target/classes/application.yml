@@ -1,0 +1,85 @@
+server:
+  port: 20001
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  application:
+    name: sweeping_boot
+  #  profiles:
+  #    active: dev
+  datasource:
+    allowPublicKeyRetrieval: true
+    username: root
+    password: 880088
+    url: jdbc:mysql://127.0.0.1:3306/AircraftInspection?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    #Spring Boot 默认是不注入这些属性值的，需要自己绑定
+    #druid 数据源专有配置
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+
+    #配置监控统计拦截的filters，stat:监控统计、log4j：日志记录、wall：防御sql注入
+    #如果允许时报错  java.lang.ClassNotFoundException: org.apache.log4j.Priority
+    #则导入 log4j 依赖即可，Maven 地址：https://mvnrepository.com/artifact/log4j/log4j
+    filters: stat,wall,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+  servlet:
+    multipart:
+      max-file-size: 1000000     # 文件上传大小限制为500kb
+      max-request-size: 1000000  # 请求大小限制为500kb
+
+#############################################################
+##
+## mybatis 配置
+## !!! 更改路径
+##
+#############################################################
+mybatis:
+  type-aliases-package: yang.robot.pojo          # 所有POJO类所在包路径
+  mapper-locations: classpath:mapper/*.xml      # mapper映射文件
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#############################################################
+##
+## mybatis mapper 配置
+##
+#############################################################
+## 通用 Mapper 配置
+  mapper:
+    mappers: yang.robot.mapper
+    not-empty: false    # 在进行数据库操作的的时候，判断表达式 username != null, 是否追加 username != ''
+    identity: MYSQL
+
+#MQTT配置信息
+#mqtt:
+#  appid: mqtt_id1
+#  input:
+#    topic: /testservice
+#  out:
+#    topic: /testserver
+#  outAppId: mqtt_out_id
+#  password: 13005446052Yzf
+#  services: tcp://121.36.51.65:1883
+#  user: admin
+#
+##ros:
+#  ip: 192.168.3.111
+#  topic:
+#    gnss:
+#      name: /hardware_information
+#      type: sw_common_msgs/HardwareInformation
+
